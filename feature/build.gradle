@@ -5,7 +5,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
+
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 27
