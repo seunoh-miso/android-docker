@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -x
 
 already_remove() {
     if [ "$(docker ps -f NAME=${NAME} | wc -l)" -gt 0 ]; then
@@ -11,14 +12,19 @@ already_remove() {
 
 run() {
     already_remove
-    ID=$(docker create --name ${NAME} -e KEY_FILE=/app/${FILENAME} -e STORE_PASSWORD=miso12 -e KEY_ALIAS=miso -e KEY_PASSWORD=miso12 ${IMAGE} release)
+    echo "Create container"
+     ID=$(docker create --name ${NAME} -e KEY_FILE=/app/${FILENAME} -e STORE_PASSWORD=miso12 -e KEY_ALIAS=miso -e KEY_PASSWORD=miso12 ${IMAGE} ${BUILD})
+    echo "Copy to container"
     docker cp ${FILE} ${ID}:/app/${FILENAME}
+    echo "Start container"
     docker start -a -i ${ID}
+    echo "Copy from container to Host"
     docker cp ${ID}:/app/app/build/outputs/ $(pwd)/build/outputs/
+    echo "Remove container"
     docker rm -f -v ${ID}
 }
 
-while getopts i:n:f: arg
+while getopts i:n:b:f: arg
 do
     case ${arg} in
         i)
@@ -28,6 +34,10 @@ do
         n)
             NAME=$OPTARG
             echo "option n, argument <$NAME>"
+        ;;
+        b)
+            BUILD=$OPTARG
+            echo "option b, argument <$NAME>"
         ;;
         f)
             FILE=$OPTARG

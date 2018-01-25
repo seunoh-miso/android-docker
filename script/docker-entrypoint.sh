@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-set -e
+set -x
 
 release() {
+  chmod +x ${KEY_FILE}
   echo "Starting build release path=`${KEY_FILE}`"
   exec /app/gradlew assembleRelease \
    -Pandroid.injected.signing.store.file=${KEY_FILE} \
