@@ -12,7 +12,7 @@ already_remove() {
 run() {
     echo "Delete container"
     already_remove
-    echo "Create container"
+
     ID=$(docker create --name ${NAME} \
      -e KEY_FILE=/app/${FILENAME} \
      -e STORE_PASSWORD=miso12 \
@@ -21,6 +21,7 @@ run() {
      ${IMAGE} \
      ${BUILD}
      )
+    echo "Created container ${ID}"
     echo "Copy to container"
     docker cp ${FILE} ${ID}:/app/${FILENAME}
     echo "Start container"
