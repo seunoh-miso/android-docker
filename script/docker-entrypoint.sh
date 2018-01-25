@@ -2,8 +2,8 @@
 set -x
 
 release() {
-  chmod +x ${KEY_FILE}
-  echo "Starting build release path=`${KEY_FILE}`"
+  chmod +x $(dirname "${KEY_FILE}")'/'$(basename "${KEY_FILE}")
+  echo 'Starting build release path='$(dirname "${KEY_FILE}")'/'$(basename "${KEY_FILE}")
   exec /app/gradlew assembleRelease \
    -Pandroid.injected.signing.store.file=${KEY_FILE} \
    -Pandroid.injected.signing.store.password=${STORE_PASSWORD} \
@@ -15,8 +15,5 @@ case "$1" in
   release)
     shift
     release
-    ;;
-  *)
-    exec "$@"
     ;;
 esac

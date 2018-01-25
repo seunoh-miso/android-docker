@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-while getopts n: arg
+while getopts "n:" arg;
 do
-    case $arg in
+    case ${arg} in
         n)
             docker build --tag $OPTARG $(pwd)
         ;;

@@ -13,7 +13,14 @@ run() {
     echo "Delete container"
     already_remove
     echo "Create container"
-    ID=$(docker create --name ${NAME} -e KEY_FILE=/app/${FILENAME} -e STORE_PASSWORD=miso12 -e KEY_ALIAS=miso -e KEY_PASSWORD=miso12 ${IMAGE} ${BUILD})
+    ID=$(docker create --name ${NAME} \
+     -e KEY_FILE=/app/${FILENAME} \
+     -e STORE_PASSWORD=miso12 \
+     -e KEY_ALIAS=miso \
+     -e KEY_PASSWORD=miso12 \
+     ${IMAGE} \
+     ${BUILD}
+     )
     echo "Copy to container"
     docker cp ${FILE} ${ID}:/app/${FILENAME}
     echo "Start container"
