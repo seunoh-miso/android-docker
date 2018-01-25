@@ -10,7 +10,7 @@ already_remove() {
 }
 
 run() {
-#    already_remove
+    already_remove
     id=$(docker create --name ${NAME} -e KEY_FILE=/app/${FILENAME} -e STORE_PASSWORD=miso12 -e KEY_ALIAS=miso -e KEY_PASSWORD=miso12 ${IMAGE} release) \
     && docker cp ${FILE} $id:/app/${FILENAME} \
     && docker start -a -i $id \
