@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -x
 
 already_remove() {
     if [ "$(docker ps -f NAME=${NAME} | wc -l)" -gt 0 ]; then
@@ -11,9 +10,10 @@ already_remove() {
 }
 
 run() {
+    echo "Delete container"
     already_remove
     echo "Create container"
-     ID=$(docker create --name ${NAME} -e KEY_FILE=/app/${FILENAME} -e STORE_PASSWORD=miso12 -e KEY_ALIAS=miso -e KEY_PASSWORD=miso12 ${IMAGE} ${BUILD})
+    ID=$(docker create --name ${NAME} -e KEY_FILE=/app/${FILENAME} -e STORE_PASSWORD=miso12 -e KEY_ALIAS=miso -e KEY_PASSWORD=miso12 ${IMAGE} ${BUILD})
     echo "Copy to container"
     docker cp ${FILE} ${ID}:/app/${FILENAME}
     echo "Start container"
@@ -24,7 +24,7 @@ run() {
     docker rm -f -v ${ID}
 }
 
-while getopts i:n:b:f: arg
+while getopts "i:n:b:f:" arg;
 do
     case ${arg} in
         i)
@@ -37,13 +37,16 @@ do
         ;;
         b)
             BUILD=$OPTARG
-            echo "option b, argument <$NAME>"
+            echo "option b, argument <$BUILD>"
         ;;
         f)
             FILE=$OPTARG
             FILENAME=$(basename "$FILE")
             echo "option f, argument <$OPTARG>, $FILENAME"
         ;;
+            *)
+            echo "$@"
+            ;;
     esac
 done
 
