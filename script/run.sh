@@ -25,7 +25,7 @@ run() {
     echo "Copy to container ${FILE}"
     docker cp ${FILE} ${ID}:/app/${FILENAME}
     echo "Start container $(docker start -a -i ${ID})"
-    echo "Copy from container to Host $(docker cp ${ID}:/app/app/build/outputs/ $(pwd)/build/outputs/)"
+    echo "Copy from container to Host $(docker cp ${ID}:/app/app/build/outputs/ $(pwd)/outputs/)"
     echo "Remove container"
     docker rm -f -v ${ID}
 }
