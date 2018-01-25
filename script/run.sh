@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 already_remove() {
-    if [ "$(docker ps -f NAME=${NAME} | wc -l)" -gt 0 ]; then
+    if [ "$(docker ps -f NAME=${NAME} | wc -l)" -gt 1 ]; then
         docker rm ${NAME}
         echo "Delete docker container ${NAME}"
     else
@@ -22,12 +22,10 @@ run() {
      ${BUILD}
      )
     echo "Created container ${ID}"
-    echo "Copy to container"
+    echo "Copy to container ${FILE}"
     docker cp ${FILE} ${ID}:/app/${FILENAME}
-    echo "Start container"
-    docker start -a -i ${ID}
-    echo "Copy from container to Host"
-    docker cp ${ID}:/app/app/build/outputs/ $(pwd)/build/outputs/
+    echo "Start container $(docker start -a -i ${ID})"
+    echo "Copy from container to Host $(docker cp ${ID}:/app/app/build/outputs/ $(pwd)/build/outputs/)"
     echo "Remove container"
     docker rm -f -v ${ID}
 }
