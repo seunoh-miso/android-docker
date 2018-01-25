@@ -11,7 +11,7 @@ RUN apt-get update && \
 		rm -rf /var/lib/apt/lists/*
 
 # Download and  Android SDK
-ARG DEFAULT_ANDROID_SDK_VERSION "3859397"
+ARG DEFAULT_ANDROID_SDK_VERSION="3859397"
 ENV ANDROID_SDK_VERSION=${DEFAULT_ANDROID_SDK_VERSION}
 ENV ANDROID_SDK_URL https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_VERSION}.zip
 ENV ANDROID_HOME /opt/android-sdk
@@ -29,7 +29,7 @@ ENV PATH ${ANDROID_SDK_HOME}/tools:${ANDROID_SDK_HOME}/platform-tools:$PATH
 RUN mkdir -p ${ANDROID_SDK_HOME}/.android && touch ${ANDROID_SDK_HOME}/.android/repositories.cfg
 
 # # Install Android SDK components
-ARG DEFAULT_CMAKE_VERSION "3.6.4111459"
+ARG DEFAULT_CMAKE_VERSION="3.6.4111459"
 ENV CMAKE_VERSION=${DEFAULT_CMAKE_VERSION}
 ENV CMAKE_PATH ${ANDROID_SDK_HOME}/cmake/${CMAKE_VERSION}
 ENV ANDROID_NDK_HOME ${ANDROID_SDK_HOME}/ndk-bundle
