@@ -10,26 +10,29 @@ already_remove() {
 }
 
 run() {
-    already_remove
-
-    id=$(docker create --name ${NAME} -e KEY_FILE=/app/${FILENAME} -e STORE_PASSWORD=miso12 -e KEY_ALIAS=miso -e KEY_PASSWORD=miso12 partner_android:latest release) \
+#    already_remove
+    id=$(docker create --name ${NAME} -e KEY_FILE=/app/${FILENAME} -e STORE_PASSWORD=miso12 -e KEY_ALIAS=miso -e KEY_PASSWORD=miso12 ${IMAGE} release) \
     && docker cp ${FILE} $id:/app/${FILENAME} \
     && docker start -a -i $id \
     && docker cp $id:/app/app/build/outputs/ $(pwd)/build/outputs/ \
     && docker rm -f -v $id
 }
 
-while getopts n:f: arg
+while getopts i:n:f: arg
 do
     case $arg in
+        i)
+            IMAGE=$OPTARG
+            echo "option i, argument <$IMAGE>"
+        ;;
         n)
             NAME=$OPTARG
-            echo "option a, argument <$NAME>"
+            echo "option n, argument <$NAME>"
         ;;
         f)
             FILE=$OPTARG
             FILENAME=$(basename "$FILE")
-            echo "option t, argument <$OPTARG>, $FILENAME"
+            echo "option f, argument <$OPTARG>, $FILENAME"
         ;;
     esac
 done
