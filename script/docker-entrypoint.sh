@@ -13,7 +13,7 @@ release() {
 
   chmod +x ${FILE}
 
-  echo "Starting build release path=${FILE}"
+  echo "Starting build ${TYPE}..."
   exec /app/gradlew ${TYPE} \
    -Pandroid.injected.signing.store.file=${FILE} \
    -Pandroid.injected.signing.store.password=${STORE_PASSWORD} \

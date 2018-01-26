@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 IMAGE=""
 NAME=""
 BUILD=""
@@ -11,17 +10,20 @@ KEY_PASSWORD=""
 
 usage() {
     echo "Usage: $0 [OPTION...]"
-    echo '\t-i --image; Set docker build image name (required)'
-    echo '\t-n --name; Set docker container name (required)'
-    echo '\t-b --build; Set build type in android (required)'
-    echo '\t-f --file; Set android keystore file'
-    echo '\t-s --storewd; Set a secure password for your keystore'
-    echo '\t-a --alias; Set an identifying name for your key'
-    echo '\t-k --keywd; Set secure password for your key.'
+    echo '\t-i ; Set docker build image name (required)'
+    echo '\t-n ; Set docker container name (required)'
+    echo '\t-b ; Set build type in android (required)'
+    echo '\t-f ; Set android keystore file'
+    echo '\t-s ; Set a secure password for your keystore'
+    echo '\t-a ; Set an identifying name for your key'
+    echo '\t-k ; Set secure password for your key.'
     exit 1
 }
 
 run() {
+    echo "Remove docker container: ${NAME}"
+    docker ps -q --filter name=${NAME} | grep -q . && docker rm ${NAME}
+
     local FILENAME=$(basename ${FILE})
     local ID=$(docker create --name ${NAME} \
      -e KEY_FILE=/app/${FILENAME} \
@@ -45,6 +47,7 @@ run() {
 
     echo "Remove container"
     docker rm -f -v ${ID}
+    echo 'Finished'
 }
 
 while getopts "i:n:b:f:s:a:k:" opt; do
@@ -61,7 +64,7 @@ while getopts "i:n:b:f:s:a:k:" opt; do
     f)
         FILE=${OPTARG}
     ;;
-    p)
+    s)
         STORE_PASSWORD=${OPTARG}
     ;;
     a)
