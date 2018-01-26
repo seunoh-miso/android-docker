@@ -1,59 +1,85 @@
 #!/usr/bin/env bash
 
-already_remove() {
-    if [ "$(docker ps -f NAME=${NAME} | wc -l)" -gt 1 ]; then
-        docker rm ${NAME}
-        echo "Delete docker container ${NAME}"
-    else
-        echo 'Not found containers'
-    fi
+
+IMAGE=""
+NAME=""
+BUILD=""
+FILE=""
+STORE_PASSWORD=""
+KEY_ALIAS=""
+KEY_PASSWORD=""
+
+usage() {
+    echo "Usage: $0 [OPTION...]"
+    echo '\t-i --image; Set docker build image name (required)'
+    echo '\t-n --name; Set docker container name (required)'
+    echo '\t-b --build; Set build type in android (required)'
+    echo '\t-f --file; Set android keystore file'
+    echo '\t-s --storewd; Set a secure password for your keystore'
+    echo '\t-a --alias; Set an identifying name for your key'
+    echo '\t-k --keywd; Set secure password for your key.'
+    exit 1
 }
 
 run() {
-    echo "Delete container"
-    already_remove
-
-    ID=$(docker create --name ${NAME} \
+    local FILENAME=$(basename ${FILE})
+    local ID=$(docker create --name ${NAME} \
      -e KEY_FILE=/app/${FILENAME} \
-     -e STORE_PASSWORD=miso12 \
-     -e KEY_ALIAS=miso \
-     -e KEY_PASSWORD=miso12 \
+     -e STORE_PASSWORD=${STORE_PASSWORD} \
+     -e KEY_ALIAS=${KEY_ALIAS} \
+     -e KEY_PASSWORD=${KEY_PASSWORD} \
      ${IMAGE} \
      ${BUILD}
      )
+
     echo "Created container ${ID}"
+
     echo "Copy to container ${FILE}"
     docker cp ${FILE} ${ID}:/app/${FILENAME}
-    echo "Start container $(docker start -a -i ${ID})"
-    echo "Copy from container to Host $(docker cp ${ID}:/app/app/build/outputs/ $(pwd)/outputs/)"
+
+    echo "Start container"
+    docker start -a -i ${ID}
+
+    echo "Copy from container to Host"
+    docker cp ${ID}:/app/app/build/outputs/ $(pwd)/outputs/
+
     echo "Remove container"
     docker rm -f -v ${ID}
 }
 
-while getopts "i:n:b:f:" arg;
-do
-    case ${arg} in
-        i)
-            IMAGE=$OPTARG
-            echo "option i, argument <$IMAGE>"
-        ;;
-        n)
-            NAME=$OPTARG
-            echo "option n, argument <$NAME>"
-        ;;
-        b)
-            BUILD=$OPTARG
-            echo "option b, argument <$BUILD>"
-        ;;
-        f)
-            FILE=$OPTARG
-            FILENAME=$(basename "$FILE")
-            echo "option f, argument <$OPTARG>, $FILENAME"
-        ;;
-            *)
-            echo "$@"
-            ;;
+while getopts "i:n:b:f:s:a:k:" opt; do
+    case ${opt} in
+    i)
+        IMAGE=${OPTARG}
+    ;;
+    n)
+        NAME=${OPTARG}
+    ;;
+    b)
+        BUILD=${OPTARG}
+    ;;
+    f)
+        FILE=${OPTARG}
+    ;;
+    p)
+        STORE_PASSWORD=${OPTARG}
+    ;;
+    a)
+        KEY_ALIAS=${OPTARG}
+    ;;
+    k)
+        KEY_PASSWORD=${OPTARG}
+    ;;
+    \?)
+    echo "Invalid option: -$OPTARG"
+    usage
+    ;;
     esac
 done
 
-run
+if [[ "${NAME}" && "${BUILD}" && "${IMAGE}" ]]; then
+  run
+  else
+  echo "Invalid option:"
+  usage
+fi
