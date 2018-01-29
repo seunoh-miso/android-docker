@@ -43,8 +43,8 @@ RUN mkdir /app
 WORKDIR /app
 COPY . /app
 
-RUN echo " \
-cmake.path=${CMAKE_PATH}/bin \n \
+RUN echo "\
+cmake.dir=${CMAKE_PATH}\n \
 " > local.properties
 
 ARG KEY_FILE=""
@@ -57,6 +57,7 @@ ENV RELEASE_STORE_PASSWORD=${STORE_PASSWORD}
 ENV RELEASE_KEY_ALIAS=${KEY_ALIAS}
 ENV RELEASE_KEY_PASSWORD=${KEY_PASSWORD}
 
-RUN ./gradlew assemble clean
+RUN ./gradlew assembleDebug clean
+
 RUN ["chmod", "+x", "/app/script/docker-entrypoint.sh"]
 ENTRYPOINT ["/app/script/docker-entrypoint.sh"]
