@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 IMAGE=""
 NAME=""
@@ -86,3 +86,7 @@ if [[ "${NAME}" && "${BUILD}" && "${IMAGE}" ]]; then
   echo "Invalid option:"
   usage
 fi
+
+
+# sh script/run.sh -i t1 -n t1 -b release -f ~/Desktop/test.jsk -s miso12 -a miso -k miso12
+# sh script/run.sh -i partner_test -n partner_test -b release -f ./test.jsk -s miso12 -a miso -k miso12

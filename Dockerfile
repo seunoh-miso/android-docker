@@ -47,6 +47,10 @@ RUN find . -name "build" -type d | xargs rm -rf
 RUN find . -name ".externalNativeBuild" -type d | xargs rm -rf
 
 RUN echo "\
+org.gradle.parallel=true\n \
+" > gradle.properties
+
+RUN echo "\
 cmake.dir=${CMAKE_PATH}\n \
 " > local.properties
 
